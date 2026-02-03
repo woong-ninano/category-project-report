@@ -272,7 +272,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ config, onSave, onLogou
                   
                   <div className="flex flex-col gap-4">
                     <div className="flex justify-between items-center">
-                      <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">디바이스 이미지 업로드</label>
+                      <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">디바이스 이미지 업로드(사이즈 400*800)</label>
                       <button onClick={() => addImageField(idx)} className="text-xs text-[#004a99] font-bold hover:underline px-3 py-1 bg-blue-50 rounded-lg">+ 이미지 추가</button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
