@@ -236,8 +236,8 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
             </div>
           </div>
 
-          {/* Right: Device Frame Area (기존 54px + 추가 50px = 104px 하단 이동) */}
-          <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[104px]">
+          {/* Right: Device Frame Area (이미지 영역 위치 조정: 54px 하단 이동) */}
+          <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[54px]">
             <div className="flex flex-col items-center w-full">
               {viewMode === 'MO' ? (
                 /* Mobile Phone Frame */
