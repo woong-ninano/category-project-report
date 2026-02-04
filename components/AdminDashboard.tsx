@@ -153,6 +153,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ config, onSave, onLogou
               <label className="text-sm font-bold text-gray-600">프로젝트명</label>
               <input name="headerProjectTitle" value={editConfig.headerProjectTitle} onChange={handleInputChange} className="border border-gray-200 rounded-xl px-4 py-3" />
             </div>
+
+            {/* 히어로 설정 추가 */}
+            <div className="flex flex-col gap-3">
+              <label className="text-sm font-bold text-gray-600">MO 히어로 뱃지</label>
+              <input name="heroBadge" value={editConfig.heroBadge} onChange={handleInputChange} className="border border-gray-200 rounded-xl px-4 py-3" />
+            </div>
+            <div className="flex flex-col gap-3 md:col-span-2">
+              <label className="text-sm font-bold text-gray-600">MO 히어로 메인 타이틀 (\n 개행 가능)</label>
+              <textarea name="heroTitle1" value={editConfig.heroTitle1} onChange={handleInputChange} rows={2} className="border border-gray-200 rounded-xl px-4 py-3 resize-none font-bold" />
+            </div>
+            <div className="flex flex-col gap-3 md:col-span-2">
+              <label className="text-sm font-bold text-gray-600">MO 히어로 서브 설명 (\n 개행 가능)</label>
+              <textarea name="heroTitle2" value={editConfig.heroTitle2} onChange={handleInputChange} rows={2} className="border border-gray-200 rounded-xl px-4 py-3 resize-none" />
+            </div>
           </div>
         </div>
 
@@ -212,7 +226,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ config, onSave, onLogou
                     </div>
                     
                     <div className="flex flex-col gap-4">
-                      <label className="text-xs font-bold text-gray-400 uppercase">이미지 (400*800 권장)</label>
+                      <label className="text-xs font-bold text-gray-400 uppercase">이미지 (MO: 400*800, PC: 1200*750 권장)</label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {item.images.map((img, imgIdx) => (
                           <div key={imgIdx} className="bg-white p-4 rounded-xl border border-gray-100 flex flex-col gap-3">

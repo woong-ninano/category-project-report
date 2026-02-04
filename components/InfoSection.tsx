@@ -209,7 +209,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
         style={{ height: `${items.length * 100}vh` }}
       >
         <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-20 lg:gap-32 overflow-hidden max-w-7xl mx-auto px-12">
-          {/* Left: Text Area */}
+          {/* Left: Text Area (고정) */}
           <div className="w-[380px] shrink-0 flex items-center h-full">
             <div className="relative w-full">
               {items.map((item, idx) => (
@@ -236,8 +236,8 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
             </div>
           </div>
 
-          {/* Right: Device Frame Area */}
-          <div className="flex-1 flex flex-col items-center justify-center h-full">
+          {/* Right: Device Frame Area (50px 아래로 이동) */}
+          <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[50px]">
             <div className="flex flex-col items-center w-full">
               {viewMode === 'MO' ? (
                 /* Mobile Phone Frame */
@@ -272,7 +272,6 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                 <div className="w-full max-w-[700px] lg:max-w-[800px] flex flex-col items-center">
                   <div className="w-full bg-[#1a1a1a] rounded-2xl p-1.5 shadow-[0_50px_120px_rgba(0,0,0,0.15)] border border-gray-800">
                     <div className="w-full bg-white rounded-xl aspect-[16/10] overflow-hidden relative">
-                       {/* Browser Header Bar */}
                        <div className="absolute top-0 left-0 w-full h-8 bg-gray-50 border-b border-gray-100 z-50 flex items-center px-4 gap-1.5">
                           <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
                           <div className="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
@@ -300,13 +299,11 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                        </div>
                     </div>
                   </div>
-                  {/* Monitor Stand */}
                   <div className="w-24 h-6 bg-[#333] -mt-1 relative z-0"></div>
                   <div className="w-48 h-2.5 bg-[#444] rounded-full shadow-lg"></div>
                 </div>
               )}
 
-              {/* 하단 페이징 컨트롤 */}
               <div className="flex items-center gap-6 mt-8 bg-white/80 px-5 py-2.5 rounded-full border border-gray-100 shadow-sm backdrop-blur-md z-20">
                 <button onClick={(e) => handlePrevSubImage(e, activeItemIndex)} disabled={subImageIndices[activeItemIndex] === 0} className="p-1.5 rounded-full text-gray-400 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-10 transition-all">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>

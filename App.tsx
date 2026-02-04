@@ -60,7 +60,7 @@ const App: React.FC = () => {
       if (data && data.config) {
         let fetchedConfig = data.config as SiteConfig;
         
-        // 데이터 마이그레이션 (기존 contentItems가 있을 경우 MO로 이전)
+        // 데이터 마이그레이션
         const legacyConfig = data.config as any;
         if (legacyConfig.contentItems && !fetchedConfig.contentItemsMO) {
            fetchedConfig.contentItemsMO = legacyConfig.contentItems;
@@ -172,27 +172,29 @@ const App: React.FC = () => {
         onViewModeChange={setViewMode}
       />
       
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center bg-white overflow-hidden py-24 md:py-0">
-        <div className="max-w-7xl mx-auto px-6 text-center z-10">
-          <div className="inline-block px-4 py-1.5 mb-6 text-[10px] md:text-xs font-bold tracking-widest text-[#004a99] uppercase bg-blue-50 rounded-full">
-            {config.heroBadge}
+      {/* Hero Section - MO 모드에서만 표시 */}
+      {viewMode === 'MO' && (
+        <section className="relative min-h-screen flex items-center justify-center bg-white overflow-hidden py-24 md:py-0">
+          <div className="max-w-7xl mx-auto px-6 text-center z-10">
+            <div className="inline-block px-4 py-1.5 mb-6 text-[10px] md:text-xs font-bold tracking-widest text-[#004a99] uppercase bg-blue-50 rounded-full">
+              {config.heroBadge}
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-8 !leading-tight md:leading-[1.1] tracking-tighter whitespace-pre-line">
+              {config.heroTitle1}
+            </h1>
+            <p className="max-w-2xl mx-auto text-lg md:text-2xl text-gray-900 font-normal leading-relaxed whitespace-pre-line opacity-70">
+              {config.heroTitle2}
+            </p>
+            <div className="mt-16 animate-bounce flex justify-center opacity-20">
+              <svg className="w-6 h-6 md:w-8 md:h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 14l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-8 !leading-tight md:leading-[1.1] tracking-tighter whitespace-pre-line">
-            {config.heroTitle1}
-          </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-2xl text-gray-900 font-normal leading-relaxed whitespace-pre-line opacity-70">
-            {config.heroTitle2}
-          </p>
-          <div className="mt-16 animate-bounce flex justify-center opacity-20">
-            <svg className="w-6 h-6 md:w-8 md:h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 14l-7 7-7-7" />
-            </svg>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <main className="bg-white">
+      <main className={`bg-white ${viewMode === 'PC' ? 'pt-32' : ''}`}>
         <InfoSection items={activeItems} viewMode={viewMode} id="main-content" />
       </main>
 
