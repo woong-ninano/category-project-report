@@ -31,6 +31,11 @@ const App: React.FC = () => {
   const [passwordInput, setPasswordInput] = useState('');
   const [footerLogoError, setLogoError] = useState(false);
 
+  // 탭 전환 시 최상단으로 스크롤
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [viewMode]);
+
   useEffect(() => {
     const handleHashChange = () => {
       setIsAdminRoute(window.location.hash === '#admin');
@@ -194,7 +199,8 @@ const App: React.FC = () => {
         </section>
       )}
 
-      <main className={`bg-white ${viewMode === 'PC' ? 'pt-32' : ''}`}>
+      {/* PC 모드일 때는 상단 여백을 주어 헤더와 겹치지 않게 함 */}
+      <main className={`bg-white ${viewMode === 'PC' ? 'pt-24 lg:pt-32' : ''}`}>
         <InfoSection items={activeItems} viewMode={viewMode} id="main-content" />
       </main>
 

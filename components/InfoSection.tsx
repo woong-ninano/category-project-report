@@ -174,7 +174,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                 </div>
               ) : (
                 <div className="w-full max-w-[320px]">
-                  <div className="bg-white rounded-lg border-[6px] border-[#333] shadow-lg aspect-[16/10] overflow-hidden">
+                  <div className="bg-white rounded-lg border-[6px] border-[#333] shadow-lg aspect-[16/10] overflow-hidden relative">
                      {item.images.map((img, imgIdx) => (
                         <div key={imgIdx} className={`absolute inset-0 w-full transition-all duration-700 ${imgIdx === subImageIndices[idx] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                           <img src={img} alt={`${item.title} ${imgIdx}`} className="w-full h-full object-cover object-top" />
@@ -236,8 +236,8 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
             </div>
           </div>
 
-          {/* Right: Device Frame Area (50px 아래로 이동) */}
-          <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[50px]">
+          {/* Right: Device Frame Area (기존 54px + 추가 50px = 104px 하단 이동) */}
+          <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[104px]">
             <div className="flex flex-col items-center w-full">
               {viewMode === 'MO' ? (
                 /* Mobile Phone Frame */

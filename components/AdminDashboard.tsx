@@ -136,12 +136,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ config, onSave, onLogou
 
         {/* Basic Settings (공통) */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-8">
-          <h2 className="text-xl font-bold mb-8 flex items-center gap-2">
+          <h2 className="text-xl font-bold mb-8 flex items-center gap-2 text-gray-800">
             <div className="w-1.5 h-6 bg-blue-600 rounded-full"></div> 기본 시스템 정보 (공통)
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-3">
-              <label className="text-sm font-bold text-gray-600">로고 이미지</label>
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">로고 이미지</label>
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center border border-dashed border-gray-200 overflow-hidden shrink-0">
                   {editConfig.headerLogoUrl && <img src={editConfig.headerLogoUrl} className="w-full h-full object-contain p-1" />}
@@ -150,22 +150,24 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ config, onSave, onLogou
               </div>
             </div>
             <div className="flex flex-col gap-3">
-              <label className="text-sm font-bold text-gray-600">프로젝트명</label>
-              <input name="headerProjectTitle" value={editConfig.headerProjectTitle} onChange={handleInputChange} className="border border-gray-200 rounded-xl px-4 py-3" />
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">프로젝트명</label>
+              <input name="headerProjectTitle" value={editConfig.headerProjectTitle} onChange={handleInputChange} className="border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-all" />
             </div>
 
-            {/* 히어로 설정 추가 */}
+            <div className="md:col-span-2 h-px bg-gray-100 my-4"></div>
+
+            {/* 히어로 설정 영역 */}
             <div className="flex flex-col gap-3">
-              <label className="text-sm font-bold text-gray-600">MO 히어로 뱃지</label>
-              <input name="heroBadge" value={editConfig.heroBadge} onChange={handleInputChange} className="border border-gray-200 rounded-xl px-4 py-3" />
+              <label className="text-xs font-bold text-orange-400 uppercase tracking-widest">MO 히어로 뱃지</label>
+              <input name="heroBadge" value={editConfig.heroBadge} onChange={handleInputChange} className="border border-orange-100 rounded-xl px-4 py-3 outline-none focus:border-orange-500 transition-all" />
             </div>
             <div className="flex flex-col gap-3 md:col-span-2">
-              <label className="text-sm font-bold text-gray-600">MO 히어로 메인 타이틀 (\n 개행 가능)</label>
-              <textarea name="heroTitle1" value={editConfig.heroTitle1} onChange={handleInputChange} rows={2} className="border border-gray-200 rounded-xl px-4 py-3 resize-none font-bold" />
+              <label className="text-xs font-bold text-orange-400 uppercase tracking-widest">MO 히어로 메인 타이틀 (\n 개행 가능)</label>
+              <textarea name="heroTitle1" value={editConfig.heroTitle1} onChange={handleInputChange} rows={2} className="border border-orange-100 rounded-xl px-4 py-3 resize-none font-bold outline-none focus:border-orange-500 transition-all" />
             </div>
             <div className="flex flex-col gap-3 md:col-span-2">
-              <label className="text-sm font-bold text-gray-600">MO 히어로 서브 설명 (\n 개행 가능)</label>
-              <textarea name="heroTitle2" value={editConfig.heroTitle2} onChange={handleInputChange} rows={2} className="border border-gray-200 rounded-xl px-4 py-3 resize-none" />
+              <label className="text-xs font-bold text-orange-400 uppercase tracking-widest">MO 히어로 서브 설명 (\n 개행 가능)</label>
+              <textarea name="heroTitle2" value={editConfig.heroTitle2} onChange={handleInputChange} rows={2} className="border border-orange-100 rounded-xl px-4 py-3 resize-none outline-none focus:border-orange-500 transition-all" />
             </div>
           </div>
         </div>
@@ -212,33 +214,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ config, onSave, onLogou
                   <div className="flex flex-col gap-6 mt-2">
                     <div className="grid grid-cols-1 gap-6">
                       <div className="flex flex-col gap-2">
-                        <label className="text-xs font-bold text-gray-400 uppercase">카테고리</label>
+                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">카테고리</label>
                         <input type="text" value={item.category || ''} onChange={(e) => handleItemChange(idx, 'category', e.target.value)} className="bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-xs font-bold text-gray-400 uppercase">타이틀</label>
+                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">타이틀</label>
                         <textarea value={item.title} onChange={(e) => handleItemChange(idx, 'title', e.target.value)} rows={2} className="text-lg font-bold bg-white border border-gray-200 rounded-xl px-4 py-3 resize-none" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label className="text-xs font-bold text-gray-400 uppercase">설명</label>
+                        <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">설명</label>
                         <textarea value={item.description} onChange={(e) => handleItemChange(idx, 'description', e.target.value)} className="bg-white border border-gray-200 rounded-xl px-4 py-3 h-24 resize-none" />
                       </div>
                     </div>
                     
                     <div className="flex flex-col gap-4">
-                      <label className="text-xs font-bold text-gray-400 uppercase">이미지 (MO: 400*800, PC: 1200*750 권장)</label>
+                      <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">이미지 업로드 (MO: 400*800, PC: 1200*750 권장)</label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {item.images.map((img, imgIdx) => (
-                          <div key={imgIdx} className="bg-white p-4 rounded-xl border border-gray-100 flex flex-col gap-3">
+                          <div key={imgIdx} className="bg-white p-4 rounded-xl border border-gray-100 flex flex-col gap-3 group/img transition-all hover:shadow-md">
                             <div className="flex justify-between items-center">
                               <span className="text-[10px] font-bold text-gray-300">IMAGE {imgIdx + 1}</span>
                               <button onClick={() => removeImageField(idx, imgIdx)} className="text-red-300 hover:text-red-500"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
                             </div>
                             {img && <img src={img} className="h-32 object-contain bg-gray-50 rounded" />}
-                            <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'itemImage', idx, imgIdx)} className="text-[10px]" />
+                            <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'itemImage', idx, imgIdx)} className="text-[10px] w-full" />
                           </div>
                         ))}
-                        <button onClick={() => addImageField(idx)} className="border-2 border-dashed border-gray-200 rounded-xl p-4 text-gray-400 hover:bg-white transition-all text-xs font-bold">+ 이미지 추가</button>
+                        <button onClick={() => addImageField(idx)} className="border-2 border-dashed border-gray-200 rounded-xl p-4 text-gray-400 hover:bg-white hover:border-[#004a99] hover:text-[#004a99] transition-all text-xs font-bold">+ 이미지 필드 추가</button>
                       </div>
                     </div>
                   </div>
