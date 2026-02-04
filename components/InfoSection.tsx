@@ -99,25 +99,28 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
 
   return (
     <div className="w-full">
-      {/* --- 인쇄 전용 레이아웃 --- */}
+      {/* --- 인쇄 전용 레이아웃 (A4 Landscape 최적화) --- */}
       <div className="hidden print:block w-full bg-white">
         {items.map((item, idx) => (
-          <div key={idx} className="page-break flex flex-row items-center justify-between px-20 gap-20">
-            <div className="w-1/2 flex flex-col justify-center">
-              <div className="text-[#004a99] font-black text-xs tracking-widest uppercase mb-4">
+          <div key={idx} className="page-break flex flex-row items-center justify-between gap-16">
+            {/* 텍스트 영역: 가로 폭을 조정하여 PC 인쇄 시 더 균형있게 배치 */}
+            <div className={`${viewMode === 'PC' ? 'w-[40%]' : 'w-1/2'} flex flex-col justify-center`}>
+              <div className="text-[#004a99] font-black text-sm tracking-widest uppercase mb-4">
                 {item.category || `Section ${(idx + 1).toString().padStart(2, '0')}`}
               </div>
-              <h2 className="text-5xl font-bold text-gray-900 leading-tight mb-8 whitespace-pre-line">           
+              <h2 className={`${viewMode === 'PC' ? 'text-4xl' : 'text-5xl'} font-bold text-gray-900 leading-tight mb-8 whitespace-pre-line`}>           
                 {item.title}
               </h2>
               <div className="w-16 h-[3px] bg-[#004a99] mb-8"></div>
-              <p className="text-xl text-[#333333] leading-relaxed font-normal whitespace-pre-line">
+              <p className={`${viewMode === 'PC' ? 'text-lg' : 'text-xl'} text-[#333333] leading-relaxed font-normal whitespace-pre-line`}>
                 {item.description}
               </p>
             </div>
 
-            <div className="w-1/2 flex items-center justify-center">
+            {/* 이미지 영역: PC 모드일 때 가로 스크린샷이 크게 보이도록 설정 */}
+            <div className={`${viewMode === 'PC' ? 'w-[60%]' : 'w-1/2'} flex items-center justify-center`}>
               {viewMode === 'MO' ? (
+                /* 모바일 인쇄 프레임 */
                 <div className="relative w-[300px] aspect-[9/19] bg-white rounded-[3rem] border-[8px] border-black overflow-hidden flex flex-col">
                   <div className="relative z-30 w-full shrink-0">
                     <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block bg-white" />
@@ -127,12 +130,13 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                   </div>
                 </div>
               ) : (
-                <div className="w-full max-w-[500px]">
-                  <div className="bg-white rounded-xl border-[10px] border-[#333] shadow-xl aspect-[16/10] overflow-hidden">
+                /* PC 인쇄 프레임 (가로형 강조) */
+                <div className="w-full">
+                  <div className="bg-white rounded-xl border-[8px] border-[#333] aspect-[16/10] overflow-hidden">
                     <img src={item.images[0]} alt={item.title} className="w-full h-full object-cover object-top" />
                   </div>
-                  <div className="w-16 h-4 bg-[#333] mx-auto"></div>
-                  <div className="w-32 h-2 bg-[#333] rounded-full mx-auto"></div>
+                  <div className="w-20 h-5 bg-[#333] mx-auto"></div>
+                  <div className="w-40 h-2 bg-[#333] rounded-full mx-auto"></div>
                 </div>
               )}
             </div>

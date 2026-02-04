@@ -36,7 +36,7 @@
         @media print {
             @page {
                 size: A4 landscape;
-                margin: 0; /* 여백을 0으로 하고 내부 패딩으로 조절 */
+                margin: 0;
             }
             html, body {
                 width: 297mm;
@@ -44,28 +44,37 @@
                 background-color: white !important;
                 print-color-adjust: exact;
                 -webkit-print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
             }
             .no-print {
                 display: none !important;
             }
-            /* 스크롤 애니메이션 제거 */
             .reveal {
                 opacity: 1 !important;
                 transform: none !important;
                 transition: none !important;
             }
-            /* 섹션별 강제 페이지 넘김 */
+            /* 섹션별 강제 페이지 넘김 - 가로형 A4 기준 */
             .page-break {
                 page-break-after: always;
-                height: 210mm; /* A4 가로 높이 */
+                height: 210mm;
+                width: 297mm;
                 display: flex !important;
                 align-items: center;
                 justify-content: center;
                 position: relative !important;
                 overflow: hidden;
+                box-sizing: border-box;
+                padding: 0 40mm; /* 좌우 여백 확보 */
             }
             .animate-bounce, .animate-spin {
                 display: none !important;
+            }
+            /* 그림자 제거 (인쇄 시 지저분함 방지) */
+            .shadow-xl, .shadow-2xl, .shadow-lg {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
             }
         }
     </style>
