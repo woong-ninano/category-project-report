@@ -99,7 +99,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
 
   return (
     <div className="w-full">
-      {/* --- 인쇄 전용 레이아웃 (A4 Landscape 최적화) --- */}
+      {/* --- 인쇄 전용 레이아웃 --- */}
       <div className="hidden print:block w-full bg-white">
         {items.map((item, idx) => (
           <div key={idx} className="page-break flex flex-row items-center justify-between gap-16">
@@ -208,7 +208,6 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
         className="hidden md:block print:hidden relative w-full"
         style={{ height: `${items.length * 100}vh` }}
       >
-        {/* 우측 끝 잘림 방지 그라데이션 오버레이 (자연스러운 마감) */}
         <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-16 lg:gap-24 overflow-hidden max-w-7xl mx-auto px-12 md:px-16 lg:px-20">
           
           {/* Left: Text Area */}
@@ -238,15 +237,15 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
             </div>
           </div>
 
-          {/* Right: Device Frame Area */}
-          <div className="flex-1 flex flex-col items-center justify-center h-full transform -translate-y-[50px] relative">
-            {/* 우측 그라데이션 페이드 효과: 화면이 좁아질 때 프레임이 잘려 보이지 않고 부드럽게 사라지도록 함 */}
-            <div className="absolute top-0 right-[-60px] w-[120px] h-full bg-gradient-to-l from-white via-white/40 to-transparent z-40 pointer-events-none"></div>
+          {/* Right: Device Frame Area - translate-y 값을 조절하여 위치 안정화 */}
+          <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[20px] relative">
+            {/* 우측 그라데이션 페이드 효과 */}
+            <div className="absolute top-0 right-[-80px] w-[160px] h-full bg-gradient-to-l from-white via-white/50 to-transparent z-40 pointer-events-none"></div>
 
             <div className="flex flex-col items-center w-full max-w-[640px] lg:max-w-[760px]">
               {viewMode === 'MO' ? (
                 /* Mobile Phone Frame */
-                <div className="relative w-[280px] lg:w-[320px] aspect-[1/2.1] bg-white rounded-[3rem] shadow-[0_40px_100px_rgba(0,0,0,0.1)] border-[8px] border-black overflow-hidden flex flex-col">
+                <div className="relative w-[280px] lg:w-[310px] aspect-[1/2.1] bg-white rounded-[3rem] shadow-[0_30px_80px_rgba(0,0,0,0.08)] border-[8px] border-black overflow-hidden flex flex-col">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-b-3xl z-50"></div>
                   <div className="relative z-40 w-full bg-white shrink-0">
                     <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block" draggable={false} />
@@ -273,11 +272,11 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                   </div>
                 </div>
               ) : (
-                /* PC Monitor Frame (그림자 및 베젤 마감 개선) */
+                /* PC Monitor Frame */
                 <div className="w-full flex flex-col items-center group">
-                  <div className="w-full bg-[#111] rounded-2xl p-1 shadow-[0_30px_90px_rgba(0,0,0,0.12)] border border-gray-800 transition-transform duration-500 group-hover:scale-[1.01]">
-                    <div className="w-full bg-white rounded-xl aspect-[16/10] overflow-hidden relative border border-black/10">
-                       <div className="absolute top-0 left-0 w-full h-7 bg-gray-100/80 backdrop-blur-sm border-b border-gray-200 z-50 flex items-center px-4 gap-1.5">
+                  <div className="w-full bg-[#111] rounded-2xl p-1 shadow-[0_25px_80px_rgba(0,0,0,0.1)] border border-gray-800 transition-all duration-500">
+                    <div className="w-full bg-white rounded-xl aspect-[16/10] overflow-hidden relative border border-black/5">
+                       <div className="absolute top-0 left-0 w-full h-7 bg-gray-100/90 backdrop-blur-sm border-b border-gray-200 z-50 flex items-center px-4 gap-1.5">
                           <div className="w-2 h-2 rounded-full bg-[#ff5f57]"></div>
                           <div className="w-2 h-2 rounded-full bg-[#febc2e]"></div>
                           <div className="w-2 h-2 rounded-full bg-[#28c840]"></div>
@@ -304,12 +303,12 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                        </div>
                     </div>
                   </div>
-                  <div className="w-24 h-6 bg-[#222] -mt-1 relative z-0 shadow-inner"></div>
-                  <div className="w-44 h-2 bg-[#333] rounded-full shadow-lg"></div>
+                  <div className="w-24 h-5 bg-[#222] -mt-1 relative z-0 shadow-inner"></div>
+                  <div className="w-40 h-2 bg-[#333] rounded-full shadow-lg"></div>
                 </div>
               )}
 
-              <div className="flex items-center gap-6 mt-10 bg-white/60 px-5 py-2.5 rounded-full border border-gray-100 shadow-sm backdrop-blur-lg z-50">
+              <div className="flex items-center gap-6 mt-12 bg-white/60 px-5 py-2.5 rounded-full border border-gray-100 shadow-sm backdrop-blur-lg z-50">
                 <button onClick={(e) => handlePrevSubImage(e, activeItemIndex)} disabled={subImageIndices[activeItemIndex] === 0} className="p-1.5 rounded-full text-gray-400 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-10 transition-all">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
                 </button>
@@ -318,6 +317,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                   <span className="mx-2 text-gray-300">/</span>
                   <span className="text-gray-400">{items[activeItemIndex]?.images.length}</span>
                 </div>
+                {/* Fix: Access .images.length instead of .length on ContentItem */}
                 <button onClick={(e) => handleNextSubImage(e, activeItemIndex)} disabled={subImageIndices[activeItemIndex] === (items[activeItemIndex]?.images.length - 1)} className="p-1.5 rounded-full text-gray-400 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-10 transition-all">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
                 </button>
