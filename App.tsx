@@ -15,7 +15,8 @@ const INITIAL_CONFIG: SiteConfig = {
   heroTitle2: "보험의 본질은 지키고,\n경험의 가치는 새롭게 정의하다.",
   heroDesc1: "보험의 본질은 지키고,",
   heroDesc2: "경험의 가치는 새롭게 정의하다.",
-  contentItems: [],
+  contentItemsMO: [],
+  contentItemsPC: [],
   adminPassword: "1234"
 };
 
@@ -24,6 +25,7 @@ const MASTER_RESET_KEY = 'reset';
 const App: React.FC = () => {
   const [config, setConfig] = useState<SiteConfig>(INITIAL_CONFIG);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'MO' | 'PC'>('MO');
   const [isAdminRoute, setIsAdminRoute] = useState(window.location.hash === '#admin');
   const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem('admin_auth') === 'true');
   const [passwordInput, setPasswordInput] = useState('');
@@ -56,10 +58,18 @@ const App: React.FC = () => {
       }
 
       if (data && data.config) {
-        const fetchedConfig = data.config as SiteConfig;
-        if (!fetchedConfig.adminPassword) {
-          fetchedConfig.adminPassword = "1234";
+        let fetchedConfig = data.config as SiteConfig;
+        
+        // 데이터 마이그레이션 (기존 contentItems가 있을 경우 MO로 이전)
+        const legacyConfig = data.config as any;
+        if (legacyConfig.contentItems && !fetchedConfig.contentItemsMO) {
+           fetchedConfig.contentItemsMO = legacyConfig.contentItems;
         }
+
+        if (!fetchedConfig.contentItemsMO) fetchedConfig.contentItemsMO = [];
+        if (!fetchedConfig.contentItemsPC) fetchedConfig.contentItemsPC = [];
+        if (!fetchedConfig.adminPassword) fetchedConfig.adminPassword = "1234";
+
         setConfig(fetchedConfig);
       }
     } catch (err) {
@@ -81,17 +91,6 @@ const App: React.FC = () => {
 
       if (error) {
         console.error('Save Error:', error);
-        
-        // RLS(Row-Level Security) 권한 에러 감지 시 가이드 제공
-        if (error.code === '42501' || error.message.includes('row-level security')) {
-          alert(
-            '⚠️ DB 저장 권한 오류 (RLS Policy)\n\n' +
-            'Supabase SQL Editor에서 아래 명령어를 실행하여 쓰기 권한을 허용해주세요:\n\n' +
-            'CREATE POLICY "Allow public all" ON public.site_configs FOR ALL USING (true) WITH CHECK (true);'
-          );
-          return false;
-        }
-
         alert(`DB 저장 실패: ${error.message}`);
         return false;
       }
@@ -133,7 +132,7 @@ const App: React.FC = () => {
       <div className="h-screen flex items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-          <p className="text-sm font-bold text-gray-400">데이터 동기화 중...</p>
+          <p className="text-sm font-bold text-gray-400 font-mono tracking-widest">LOADING ASSETS...</p>
         </div>
       </div>
     );
@@ -162,9 +161,16 @@ const App: React.FC = () => {
     return <AdminDashboard config={config} onSave={saveConfig} onLogout={handleLogout} />;
   }
 
+  const activeItems = viewMode === 'MO' ? config.contentItemsMO : config.contentItemsPC;
+
   return (
     <div className="min-h-screen bg-white">
-      <Header logoUrl={config.headerLogoUrl} projectTitle={config.headerProjectTitle} />
+      <Header 
+        logoUrl={config.headerLogoUrl} 
+        projectTitle={config.headerProjectTitle} 
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+      />
       
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-white overflow-hidden py-24 md:py-0">
@@ -172,24 +178,22 @@ const App: React.FC = () => {
           <div className="inline-block px-4 py-1.5 mb-6 text-[10px] md:text-xs font-bold tracking-widest text-[#004a99] uppercase bg-blue-50 rounded-full">
             {config.heroBadge}
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8 !leading-tight md:leading-[1.1] tracking-tight whitespace-pre-line">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-8 !leading-tight md:leading-[1.1] tracking-tighter whitespace-pre-line">
             {config.heroTitle1}
           </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-2xl text-gray-900 font-normal leading-relaxed whitespace-pre-line">
+          <p className="max-w-2xl mx-auto text-lg md:text-2xl text-gray-900 font-normal leading-relaxed whitespace-pre-line opacity-70">
             {config.heroTitle2}
           </p>
           <div className="mt-16 animate-bounce flex justify-center opacity-20">
             <svg className="w-6 h-6 md:w-8 md:h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7-7-7" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 14l-7 7-7-7" />
             </svg>
           </div>
         </div>
       </section>
 
       <main className="bg-white">
-        {config.contentItems && config.contentItems.length > 0 && (
-          <InfoSection items={config.contentItems} id="main-content" />
-        )}
+        <InfoSection items={activeItems} viewMode={viewMode} id="main-content" />
       </main>
 
       <footer className="bg-white py-16 md:py-24 border-t border-gray-50">
@@ -201,13 +205,13 @@ const App: React.FC = () => {
               <div className="text-[#004a99] font-bold text-xl md:text-2xl tracking-tighter">현대해상 <span className="text-[#ff6a00]">다이렉트</span></div>
             )}
           </div>
-          <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-[10px] md:text-sm font-medium text-gray-900">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-[10px] md:text-sm font-medium text-gray-900 opacity-60">
             <span>현대해상화재보험(주) CM사업본부</span>
-            <span className="hidden md:block w-px h-3 bg-gray-600"></span>
+            <span className="hidden md:block w-px h-3 bg-gray-600 opacity-20"></span>
             <span>디지털 플랫폼 고도화 구축 완료 보고</span>
           </div>
           <div className="mt-6">
-            <button onClick={() => window.location.hash = '#admin'} className="text-[10px] text-gray-300 opacity-0 hover:opacity-100 transition-opacity underline decoration-dotted">ADMIN</button>
+            <button onClick={() => window.location.hash = '#admin'} className="text-[10px] text-gray-300 opacity-0 hover:opacity-100 transition-opacity underline decoration-dotted">ADMIN_CONSOLE</button>
           </div>
         </div>
       </footer>

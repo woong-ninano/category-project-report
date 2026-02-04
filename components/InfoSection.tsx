@@ -4,16 +4,22 @@ import { SectionData } from '../types';
 
 const STATUS_BAR_URL = "https://i.ibb.co/HDBCBq6B/status-bar-iphone.png";
 
-const InfoSection: React.FC<SectionData> = ({ items }) => {
+const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [activeItemIndex, setActiveItemIndex] = useState(0);
-  const [subImageIndices, setSubImageIndices] = useState<number[]>(items.map(() => 0));
+  const [subImageIndices, setSubImageIndices] = useState<number[]>([]);
 
-  // 드래그 상태 관리 (데스크톱 전용)
+  // 드래그 상태 관리
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
+
+  // items가 바뀔 때 subImageIndices 초기화
+  useEffect(() => {
+    setSubImageIndices(items.map(() => 0));
+    setActiveItemIndex(0);
+  }, [items]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -89,13 +95,14 @@ const InfoSection: React.FC<SectionData> = ({ items }) => {
     container.scrollTop = scrollTop - walk;
   };
 
+  if (!items || items.length === 0) return null;
+
   return (
     <div className="w-full">
-      {/* --- 인쇄 전용 레이아웃 (A4 가로 최적화) --- */}
+      {/* --- 인쇄 전용 레이아웃 --- */}
       <div className="hidden print:block w-full bg-white">
         {items.map((item, idx) => (
           <div key={idx} className="page-break flex flex-row items-center justify-between px-20 gap-20">
-            {/* 좌측: 텍스트 영역 (50%) */}
             <div className="w-1/2 flex flex-col justify-center">
               <div className="text-[#004a99] font-black text-xs tracking-widest uppercase mb-4">
                 {item.category || `Section ${(idx + 1).toString().padStart(2, '0')}`}
@@ -109,20 +116,25 @@ const InfoSection: React.FC<SectionData> = ({ items }) => {
               </p>
             </div>
 
-            {/* 우측: 이미지 영역 (50%) */}
             <div className="w-1/2 flex items-center justify-center">
-              <div className="relative w-[300px] aspect-[9/19] bg-white rounded-[3rem] border-[8px] border-black overflow-hidden flex flex-col print-phone-frame">
-                <div className="relative z-30 w-full shrink-0">
-                  <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block bg-white" />
+              {viewMode === 'MO' ? (
+                <div className="relative w-[300px] aspect-[9/19] bg-white rounded-[3rem] border-[8px] border-black overflow-hidden flex flex-col">
+                  <div className="relative z-30 w-full shrink-0">
+                    <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block bg-white" />
+                  </div>
+                  <div className="relative flex-1 w-full bg-gray-50 overflow-hidden">
+                    <img src={item.images[0]} alt={item.title} className="w-full h-full object-cover object-top" />
+                  </div>
                 </div>
-                <div className="relative flex-1 w-full bg-gray-50 overflow-hidden">
-                   <img 
-                      src={item.images[0]} 
-                      alt={`${item.title}`} 
-                      className="w-full h-full object-cover object-top" 
-                    />
+              ) : (
+                <div className="w-full max-w-[500px]">
+                  <div className="bg-white rounded-xl border-[10px] border-[#333] shadow-xl aspect-[16/10] overflow-hidden">
+                    <img src={item.images[0]} alt={item.title} className="w-full h-full object-cover object-top" />
+                  </div>
+                  <div className="w-16 h-4 bg-[#333] mx-auto"></div>
+                  <div className="w-32 h-2 bg-[#333] rounded-full mx-auto"></div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         ))}
@@ -146,34 +158,36 @@ const InfoSection: React.FC<SectionData> = ({ items }) => {
             </div>
 
             <div className="flex flex-col items-center w-full">
-              <div className="relative w-full max-w-[260px] aspect-[9/19] bg-white rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.08)] border-[6px] border-black overflow-hidden flex flex-col">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-b-2xl z-40"></div>
-                <div className="relative z-30 w-full shrink-0">
-                  <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block bg-white" />
+              {viewMode === 'MO' ? (
+                <div className="relative w-full max-w-[260px] aspect-[9/19] bg-white rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.08)] border-[6px] border-black overflow-hidden flex flex-col">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-b-2xl z-40"></div>
+                  <div className="relative z-30 w-full shrink-0">
+                    <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block bg-white" />
+                  </div>
+                  <div className="relative flex-1 w-full bg-gray-50 overflow-hidden">
+                     {item.images.map((img, imgIdx) => (
+                        <div key={imgIdx} className={`absolute inset-0 w-full transition-all duration-700 ${imgIdx === subImageIndices[idx] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                          <img src={img} alt={`${item.title} ${imgIdx}`} className="w-full h-full object-cover object-top" />
+                        </div>
+                      ))}
+                  </div>
                 </div>
-
-                <div className="relative flex-1 w-full bg-gray-50 overflow-hidden">
-                   {item.images.map((img, imgIdx) => (
-                      <div
-                        key={imgIdx}
-                        className={`absolute inset-0 w-full transform transition-all duration-700 ease-in-out ${
-                          imgIdx === subImageIndices[idx] 
-                            ? 'opacity-100 scale-100 z-10' 
-                            : 'opacity-0 scale-105 z-0 pointer-events-none'
-                        }`}
-                      >
-                        <img 
-                          src={img} 
-                          alt={`${item.title} ${imgIdx}`} 
-                          className="w-full h-full object-cover object-top" 
-                        />
-                      </div>
-                    ))}
+              ) : (
+                <div className="w-full max-w-[320px]">
+                  <div className="bg-white rounded-lg border-[6px] border-[#333] shadow-lg aspect-[16/10] overflow-hidden">
+                     {item.images.map((img, imgIdx) => (
+                        <div key={imgIdx} className={`absolute inset-0 w-full transition-all duration-700 ${imgIdx === subImageIndices[idx] ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                          <img src={img} alt={`${item.title} ${imgIdx}`} className="w-full h-full object-cover object-top" />
+                        </div>
+                      ))}
+                  </div>
+                  <div className="w-10 h-3 bg-[#333] mx-auto"></div>
+                  <div className="w-20 h-1.5 bg-[#333] rounded-full mx-auto"></div>
                 </div>
-              </div>
+              )}
               
               {item.images.length > 1 && (
-                <div className="flex items-center gap-6 mt-6 bg-gray-50/80 px-4 py-2 rounded-full border border-gray-100">
+                <div className="flex items-center gap-6 mt-6 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
                   <button onClick={(e) => handlePrevSubImage(e, idx)} disabled={subImageIndices[idx] === 0} className="p-1 disabled:opacity-10">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
                   </button>
@@ -194,9 +208,9 @@ const InfoSection: React.FC<SectionData> = ({ items }) => {
         className="hidden md:block print:hidden relative w-full"
         style={{ height: `${items.length * 100}vh` }}
       >
-        <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-20 lg:gap-64 overflow-hidden max-w-7xl mx-auto px-12">
+        <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-20 lg:gap-32 overflow-hidden max-w-7xl mx-auto px-12">
           {/* Left: Text Area */}
-          <div className="w-[400px] shrink-0 flex items-center h-full">
+          <div className="w-[380px] shrink-0 flex items-center h-full">
             <div className="relative w-full">
               {items.map((item, idx) => (
                 <div
@@ -210,11 +224,11 @@ const InfoSection: React.FC<SectionData> = ({ items }) => {
                   <div className="text-[#004a99] font-black text-[10px] tracking-widest uppercase mb-4">
                     {item.category || `Section ${(idx + 1).toString().padStart(2, '0')}`}
                   </div>
-                  <h2 className="text-4xl lg:text-5xl font-semibold !leading-tight text-gray-900 mb-6 whitespace-pre-line">
+                  <h2 className={`font-semibold !leading-tight text-gray-900 mb-6 whitespace-pre-line ${viewMode === 'PC' ? 'text-3xl lg:text-4xl' : 'text-4xl lg:text-5xl'}`}>
                     {item.title}
                   </h2>
-                  <div className={`w-12 h-[3px] bg-[#004a99] mb-8 transition-all duration-700 delay-100 ${idx === activeItemIndex ? 'w-12 opacity-100' : 'w-0 opacity-0'}`}></div>
-                  <p className="text-xl text-gray-800 leading-relaxed font-normal whitespace-pre-line">
+                  <div className={`w-12 h-[3px] bg-[#004a99] mb-8 transition-all duration-700 ${idx === activeItemIndex ? 'w-12' : 'w-0'}`}></div>
+                  <p className="text-lg lg:text-xl text-gray-800 leading-relaxed font-normal whitespace-pre-line">
                     {item.description}
                   </p>
                 </div>
@@ -222,53 +236,75 @@ const InfoSection: React.FC<SectionData> = ({ items }) => {
             </div>
           </div>
 
-          {/* Right: Phone Frame Area */}
-          <div className="flex-none flex flex-col items-center justify-center h-full">
-            <div className="flex flex-col items-center w-full transform translate-y-[54px]">
-              <div className="relative w-full w-[300px] lg:w-[320px] aspect-[9/19] bg-white rounded-[3rem] shadow-[0_40px_100px_rgba(0,0,0,0.12)] border-[8px] border-black overflow-hidden flex flex-col">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-b-3xl z-50"></div>
-                
-                <div className="relative z-40 w-full bg-white shrink-0">
-                  <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block" draggable={false} />
+          {/* Right: Device Frame Area */}
+          <div className="flex-1 flex flex-col items-center justify-center h-full">
+            <div className="flex flex-col items-center w-full">
+              {viewMode === 'MO' ? (
+                /* Mobile Phone Frame */
+                <div className="relative w-[300px] lg:w-[320px] aspect-[9/19] bg-white rounded-[3rem] shadow-[0_40px_100px_rgba(0,0,0,0.12)] border-[8px] border-black overflow-hidden flex flex-col">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-b-3xl z-50"></div>
+                  <div className="relative z-40 w-full bg-white shrink-0">
+                    <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block" draggable={false} />
+                  </div>
+                  <div className="relative flex-1 w-full bg-gray-50 overflow-hidden">
+                    {items.map((item, itemIdx) => (
+                      <div 
+                        key={itemIdx}
+                        ref={(el) => { if (itemIdx === activeItemIndex) scrollContainerRefs.current[itemIdx] = el; }}
+                        onMouseDown={(e) => onMouseDown(e, itemIdx)}
+                        onMouseLeave={() => setIsDragging(false)}
+                        onMouseUp={() => setIsDragging(false)}
+                        onMouseMove={(e) => onMouseMove(e, itemIdx)}
+                        className={`absolute inset-0 w-full h-full overflow-y-auto no-scrollbar transition-opacity duration-1000 ${itemIdx === activeItemIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+                      >
+                        <style>{`.no-scrollbar::-webkit-scrollbar { display: none; }`}</style>
+                        {item.images.map((img, imgIdx) => (
+                          <div key={imgIdx} className={`absolute inset-0 w-full h-full transform transition-all duration-700 ${imgIdx === subImageIndices[itemIdx] ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}>
+                            <img src={img} alt={`Screen ${itemIdx}-${imgIdx}`} className="w-full h-auto block" draggable={false} />
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-
-                <div className="relative flex-1 w-full bg-gray-50 overflow-hidden">
-                  {items.map((item, itemIdx) => (
-                    <div 
-                      key={itemIdx}
-                      ref={(el) => { if (itemIdx === activeItemIndex) scrollContainerRefs.current[itemIdx] = el; }}
-                      onMouseDown={(e) => onMouseDown(e, itemIdx)}
-                      onMouseLeave={() => setIsDragging(false)}
-                      onMouseUp={() => setIsDragging(false)}
-                      onMouseMove={(e) => onMouseMove(e, itemIdx)}
-                      className={`absolute inset-0 w-full h-full overflow-y-auto no-scrollbar transition-opacity duration-1000 ease-in-out ${
-                        itemIdx === activeItemIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-                      } ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-                    >
-                      <style>{`.no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }`}</style>
-                      
-                      {item.images.map((img, imgIdx) => (
-                        <div
-                          key={imgIdx}
-                          className={`absolute inset-0 w-full h-full transform transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${
-                            imgIdx === subImageIndices[itemIdx] 
-                              ? 'opacity-100 scale-100 z-10' 
-                              : 'opacity-0 scale-105 z-0'
-                          }`}
-                        >
-                          <img 
-                            src={img} 
-                            alt={`Screen ${itemIdx}-${imgIdx}`} 
-                            className="w-full h-auto block" 
-                            draggable={false} 
-                            style={{ objectPosition: 'top' }}
-                          />
-                        </div>
-                      ))}
+              ) : (
+                /* PC Monitor Frame */
+                <div className="w-full max-w-[700px] lg:max-w-[800px] flex flex-col items-center">
+                  <div className="w-full bg-[#1a1a1a] rounded-2xl p-1.5 shadow-[0_50px_120px_rgba(0,0,0,0.15)] border border-gray-800">
+                    <div className="w-full bg-white rounded-xl aspect-[16/10] overflow-hidden relative">
+                       {/* Browser Header Bar */}
+                       <div className="absolute top-0 left-0 w-full h-8 bg-gray-50 border-b border-gray-100 z-50 flex items-center px-4 gap-1.5">
+                          <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                          <div className="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                       </div>
+                       
+                       <div className="pt-8 h-full w-full">
+                          {items.map((item, itemIdx) => (
+                            <div 
+                              key={itemIdx}
+                              ref={(el) => { if (itemIdx === activeItemIndex) scrollContainerRefs.current[itemIdx] = el; }}
+                              onMouseDown={(e) => onMouseDown(e, itemIdx)}
+                              onMouseLeave={() => setIsDragging(false)}
+                              onMouseUp={() => setIsDragging(false)}
+                              onMouseMove={(e) => onMouseMove(e, itemIdx)}
+                              className={`absolute inset-0 w-full h-full pt-8 overflow-y-auto no-scrollbar transition-opacity duration-1000 ${itemIdx === activeItemIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+                            >
+                               {item.images.map((img, imgIdx) => (
+                                <div key={imgIdx} className={`absolute inset-0 w-full h-full pt-8 transform transition-all duration-700 ${imgIdx === subImageIndices[itemIdx] ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}>
+                                  <img src={img} alt={`PC Screen ${itemIdx}-${imgIdx}`} className="w-full h-auto block" draggable={false} />
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                       </div>
                     </div>
-                  ))}
+                  </div>
+                  {/* Monitor Stand */}
+                  <div className="w-24 h-6 bg-[#333] -mt-1 relative z-0"></div>
+                  <div className="w-48 h-2.5 bg-[#444] rounded-full shadow-lg"></div>
                 </div>
-              </div>
+              )}
 
               {/* 하단 페이징 컨트롤 */}
               <div className="flex items-center gap-6 mt-8 bg-white/80 px-5 py-2.5 rounded-full border border-gray-100 shadow-sm backdrop-blur-md z-20">

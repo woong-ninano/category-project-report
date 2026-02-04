@@ -1,7 +1,7 @@
 
 export interface ContentItem {
   id?: string;
-  category?: string; // 추가: 섹션 카테고리/그룹명
+  category?: string;
   title: string;
   description: string;
   subDescription?: string;
@@ -17,13 +17,15 @@ export interface SiteConfig {
   heroTitle2: string;
   heroDesc1: string;
   heroDesc2: string;
-  contentItems: ContentItem[];
-  adminPassword?: string; // 추가: 관리자 비밀번호
+  contentItemsMO: ContentItem[]; // 기존 contentItems 대체
+  contentItemsPC: ContentItem[]; // PC 전용 컨텐츠 추가
+  adminPassword?: string;
 }
 
 export interface SectionData {
   id: string;
   items: ContentItem[];
+  viewMode: 'MO' | 'PC'; // 뷰 모드 추가
 }
 
 export interface MetricData {
