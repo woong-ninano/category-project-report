@@ -237,7 +237,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
             </div>
           </div>
 
-          {/* Right: Device Frame Area - translate-y 값을 70px로 조정하여 하단으로 낮춤 */}
+          {/* Right: Device Frame Area */}
           <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[70px] relative">
             {/* 우측 그라데이션 페이드 효과 */}
             <div className="absolute top-0 right-[-80px] w-[160px] h-full bg-gradient-to-l from-white via-white/50 to-transparent z-40 pointer-events-none"></div>
@@ -262,11 +262,17 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                         className={`absolute inset-0 w-full h-full overflow-y-auto no-scrollbar transition-opacity duration-1000 ${itemIdx === activeItemIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
                       >
                         <style>{`.no-scrollbar::-webkit-scrollbar { display: none; }`}</style>
-                        {item.images.map((img, imgIdx) => (
-                          <div key={imgIdx} className={`absolute inset-0 w-full h-full transform transition-all duration-700 ${imgIdx === subImageIndices[itemIdx] ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}>
-                            <img src={img} alt={`Screen ${itemIdx}-${imgIdx}`} className="w-full h-full object-cover object-top" draggable={false} />
-                          </div>
-                        ))}
+                        <div className="relative w-full h-auto">
+                          {item.images.map((img, imgIdx) => (
+                            <img 
+                              key={imgIdx} 
+                              src={img} 
+                              alt={`Screen ${itemIdx}-${imgIdx}`} 
+                              className={`w-full h-auto block transition-opacity duration-700 ${imgIdx === subImageIndices[itemIdx] ? 'opacity-100 relative z-10' : 'opacity-0 absolute top-0 left-0 z-0'}`} 
+                              draggable={false} 
+                            />
+                          ))}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -291,13 +297,19 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                               onMouseLeave={() => setIsDragging(false)}
                               onMouseUp={() => setIsDragging(false)}
                               onMouseMove={(e) => onMouseMove(e, itemIdx)}
-                              className={`absolute inset-0 w-full h-full pt-7 overflow-y-auto no-scrollbar transition-opacity duration-1000 ${itemIdx === activeItemIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+                              className={`absolute inset-0 w-full h-full overflow-y-auto no-scrollbar transition-opacity duration-1000 ${itemIdx === activeItemIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
                             >
-                               {item.images.map((img, imgIdx) => (
-                                <div key={imgIdx} className={`absolute inset-0 w-full h-full pt-7 transform transition-all duration-700 ${imgIdx === subImageIndices[itemIdx] ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}>
-                                  <img src={img} alt={`PC Screen ${itemIdx}-${imgIdx}`} className="w-full h-full object-cover object-top" draggable={false} />
-                                </div>
-                              ))}
+                               <div className="relative w-full h-auto">
+                                 {item.images.map((img, imgIdx) => (
+                                    <img 
+                                      key={imgIdx} 
+                                      src={img} 
+                                      alt={`PC Screen ${itemIdx}-${imgIdx}`} 
+                                      className={`w-full h-auto block transition-opacity duration-700 ${imgIdx === subImageIndices[itemIdx] ? 'opacity-100 relative z-10' : 'opacity-0 absolute top-0 left-0 z-0'}`} 
+                                      draggable={false} 
+                                    />
+                                  ))}
+                               </div>
                             </div>
                           ))}
                        </div>
