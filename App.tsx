@@ -199,8 +199,8 @@ const App: React.FC = () => {
         </section>
       )}
 
-      {/* PC 모드일 때는 상단 여백을 주어 헤더와 겹치지 않게 함 */}
-      <main className={`bg-white ${viewMode === 'PC' ? 'pt-24 lg:pt-32' : ''}`}>
+      {/* PC 모드에서 컨텐츠가 상단에 바로 붙도록 pt 제거 */}
+      <main className="bg-white">
         <InfoSection items={activeItems} viewMode={viewMode} id="main-content" />
       </main>
 
