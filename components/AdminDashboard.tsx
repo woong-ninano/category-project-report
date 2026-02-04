@@ -79,6 +79,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ config, onSave, onLogou
     }
   };
 
+  // 순서 변경: 위로 이동
+  const moveItemUp = (index: number) => {
+    if (index === 0) return;
+    const newItems = [...editConfig.contentItems];
+    [newItems[index - 1], newItems[index]] = [newItems[index], newItems[index - 1]];
+    setEditConfig(prev => ({ ...prev, contentItems: newItems }));
+  };
+
+  // 순서 변경: 아래로 이동
+  const moveItemDown = (index: number) => {
+    if (index === editConfig.contentItems.length - 1) return;
+    const newItems = [...editConfig.contentItems];
+    [newItems[index + 1], newItems[index]] = [newItems[index], newItems[index + 1]];
+    setEditConfig(prev => ({ ...prev, contentItems: newItems }));
+  };
+
   const addImageField = (itemIdx: number) => {
     const newItems = [...editConfig.contentItems];
     newItems[itemIdx].images.push("");
@@ -233,9 +249,35 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ config, onSave, onLogou
                   {item.category || `Section ${(idx + 1).toString().padStart(2, '0')}`}
                 </div>
 
-                <button onClick={() => removeItem(idx)} className="absolute top-6 right-6 text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                </button>
+                {/* Control Buttons (Move & Delete) */}
+                <div className="absolute top-6 right-6 flex items-center gap-2">
+                  {/* Move Up */}
+                  <button 
+                    onClick={() => moveItemUp(idx)} 
+                    disabled={idx === 0}
+                    className="text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50 disabled:opacity-10"
+                    title="위로 이동"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" /></svg>
+                  </button>
+                  {/* Move Down */}
+                  <button 
+                    onClick={() => moveItemDown(idx)} 
+                    disabled={idx === editConfig.contentItems.length - 1}
+                    className="text-gray-400 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50 disabled:opacity-10"
+                    title="아래로 이동"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                  {/* Delete */}
+                  <button 
+                    onClick={() => removeItem(idx)} 
+                    className="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50 ml-2"
+                    title="삭제"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                  </button>
+                </div>
 
                 <div className="flex flex-col gap-6 mt-2">
                   <div className="grid grid-cols-1 gap-6">
