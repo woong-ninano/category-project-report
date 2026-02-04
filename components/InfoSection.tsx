@@ -288,7 +288,8 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                           <div className="w-2 h-2 rounded-full bg-[#28c840]"></div>
                        </div>
                        
-                       <div className="pt-7 h-full w-full relative">
+                       {/* Content Container - Use absolute top-7 to respect browser bar height */}
+                       <div className="absolute top-7 bottom-0 left-0 right-0">
                           {items.map((item, itemIdx) => (
                             <div 
                               key={itemIdx}
