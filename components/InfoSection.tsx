@@ -237,8 +237,8 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
             </div>
           </div>
 
-          {/* Right: Device Frame Area - translate-y 값을 조절하여 위치 안정화 */}
-          <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[20px] relative">
+          {/* Right: Device Frame Area - translate-y 값을 70px로 조정하여 하단으로 낮춤 */}
+          <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[70px] relative">
             {/* 우측 그라데이션 페이드 효과 */}
             <div className="absolute top-0 right-[-80px] w-[160px] h-full bg-gradient-to-l from-white via-white/50 to-transparent z-40 pointer-events-none"></div>
 
@@ -317,7 +317,6 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                   <span className="mx-2 text-gray-300">/</span>
                   <span className="text-gray-400">{items[activeItemIndex]?.images.length}</span>
                 </div>
-                {/* Fix: Access .images.length instead of .length on ContentItem */}
                 <button onClick={(e) => handleNextSubImage(e, activeItemIndex)} disabled={subImageIndices[activeItemIndex] === (items[activeItemIndex]?.images.length - 1)} className="p-1.5 rounded-full text-gray-400 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-10 transition-all">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
                 </button>
