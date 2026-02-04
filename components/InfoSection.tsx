@@ -239,9 +239,6 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
 
           {/* Right: Device Frame Area */}
           <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[70px] relative">
-            {/* 우측 그라데이션 페이드 효과 */}
-            <div className="absolute top-0 right-[-80px] w-[160px] h-full bg-gradient-to-l from-white via-white/50 to-transparent z-40 pointer-events-none"></div>
-
             <div className="flex flex-col items-center w-full max-w-[640px] lg:max-w-[760px]">
               {viewMode === 'MO' ? (
                 /* Mobile Phone Frame */
@@ -288,7 +285,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                           <div className="w-2 h-2 rounded-full bg-[#28c840]"></div>
                        </div>
                        
-                       {/* Content Container - Use absolute top-7 to respect browser bar height */}
+                       {/* Content Container */}
                        <div className="absolute top-7 bottom-0 left-0 right-0">
                           {items.map((item, itemIdx) => (
                             <div 
