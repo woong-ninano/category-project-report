@@ -103,7 +103,6 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
       <div className="hidden print:block w-full bg-white">
         {items.map((item, idx) => (
           <div key={idx} className="page-break flex flex-row items-center justify-between gap-16">
-            {/* 텍스트 영역: 가로 폭을 조정하여 PC 인쇄 시 더 균형있게 배치 */}
             <div className={`${viewMode === 'PC' ? 'w-[40%]' : 'w-1/2'} flex flex-col justify-center`}>
               <div className="text-[#004a99] font-black text-sm tracking-widest uppercase mb-4">
                 {item.category || `Section ${(idx + 1).toString().padStart(2, '0')}`}
@@ -117,11 +116,9 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
               </p>
             </div>
 
-            {/* 이미지 영역: PC 모드일 때 가로 스크린샷이 크게 보이도록 설정 */}
             <div className={`${viewMode === 'PC' ? 'w-[60%]' : 'w-1/2'} flex items-center justify-center`}>
               {viewMode === 'MO' ? (
-                /* 모바일 인쇄 프레임 */
-                <div className="relative w-[300px] aspect-[9/19] bg-white rounded-[3rem] border-[8px] border-black overflow-hidden flex flex-col">
+                <div className="relative w-[300px] aspect-[1/2.1] bg-white rounded-[3rem] border-[8px] border-black overflow-hidden flex flex-col">
                   <div className="relative z-30 w-full shrink-0">
                     <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block bg-white" />
                   </div>
@@ -130,7 +127,6 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                   </div>
                 </div>
               ) : (
-                /* PC 인쇄 프레임 (가로형 강조) */
                 <div className="w-full">
                   <div className="bg-white rounded-xl border-[8px] border-[#333] aspect-[16/10] overflow-hidden">
                     <img src={item.images[0]} alt={item.title} className="w-full h-full object-cover object-top" />
@@ -163,7 +159,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
 
             <div className="flex flex-col items-center w-full">
               {viewMode === 'MO' ? (
-                <div className="relative w-full max-w-[260px] aspect-[9/19] bg-white rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.08)] border-[6px] border-black overflow-hidden flex flex-col">
+                <div className="relative w-full max-w-[260px] aspect-[1/2.1] bg-white rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.08)] border-[6px] border-black overflow-hidden flex flex-col">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-b-2xl z-40"></div>
                   <div className="relative z-30 w-full shrink-0">
                     <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block bg-white" />
@@ -212,9 +208,11 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
         className="hidden md:block print:hidden relative w-full"
         style={{ height: `${items.length * 100}vh` }}
       >
-        <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-20 lg:gap-32 overflow-hidden max-w-7xl mx-auto px-12">
-          {/* Left: Text Area (고정) */}
-          <div className="w-[380px] shrink-0 flex items-center h-full">
+        {/* 우측 끝 잘림 방지 그라데이션 오버레이 (자연스러운 마감) */}
+        <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-16 lg:gap-24 overflow-hidden max-w-7xl mx-auto px-12 md:px-16 lg:px-20">
+          
+          {/* Left: Text Area */}
+          <div className="w-[360px] lg:w-[400px] shrink-0 flex items-center h-full">
             <div className="relative w-full">
               {items.map((item, idx) => (
                 <div
@@ -240,12 +238,15 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
             </div>
           </div>
 
-          {/* Right: Device Frame Area (이미지 영역 위치 조정: 54px 하단 이동) */}
-          <div className="flex-1 flex flex-col items-center justify-center h-full transform translate-y-[54px]">
-            <div className="flex flex-col items-center w-full">
+          {/* Right: Device Frame Area */}
+          <div className="flex-1 flex flex-col items-center justify-center h-full transform -translate-y-[50px] relative">
+            {/* 우측 그라데이션 페이드 효과: 화면이 좁아질 때 프레임이 잘려 보이지 않고 부드럽게 사라지도록 함 */}
+            <div className="absolute top-0 right-[-60px] w-[120px] h-full bg-gradient-to-l from-white via-white/40 to-transparent z-40 pointer-events-none"></div>
+
+            <div className="flex flex-col items-center w-full max-w-[640px] lg:max-w-[760px]">
               {viewMode === 'MO' ? (
                 /* Mobile Phone Frame */
-                <div className="relative w-[300px] lg:w-[320px] aspect-[9/19] bg-white rounded-[3rem] shadow-[0_40px_100px_rgba(0,0,0,0.12)] border-[8px] border-black overflow-hidden flex flex-col">
+                <div className="relative w-[280px] lg:w-[320px] aspect-[1/2.1] bg-white rounded-[3rem] shadow-[0_40px_100px_rgba(0,0,0,0.1)] border-[8px] border-black overflow-hidden flex flex-col">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-b-3xl z-50"></div>
                   <div className="relative z-40 w-full bg-white shrink-0">
                     <img src={STATUS_BAR_URL} alt="status bar" className="w-full h-auto block" draggable={false} />
@@ -264,7 +265,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                         <style>{`.no-scrollbar::-webkit-scrollbar { display: none; }`}</style>
                         {item.images.map((img, imgIdx) => (
                           <div key={imgIdx} className={`absolute inset-0 w-full h-full transform transition-all duration-700 ${imgIdx === subImageIndices[itemIdx] ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}>
-                            <img src={img} alt={`Screen ${itemIdx}-${imgIdx}`} className="w-full h-auto block" draggable={false} />
+                            <img src={img} alt={`Screen ${itemIdx}-${imgIdx}`} className="w-full h-full object-cover object-top" draggable={false} />
                           </div>
                         ))}
                       </div>
@@ -272,17 +273,17 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                   </div>
                 </div>
               ) : (
-                /* PC Monitor Frame */
-                <div className="w-full max-w-[700px] lg:max-w-[800px] flex flex-col items-center">
-                  <div className="w-full bg-[#1a1a1a] rounded-2xl p-1.5 shadow-[0_50px_120px_rgba(0,0,0,0.15)] border border-gray-800">
-                    <div className="w-full bg-white rounded-xl aspect-[16/10] overflow-hidden relative">
-                       <div className="absolute top-0 left-0 w-full h-8 bg-gray-50 border-b border-gray-100 z-50 flex items-center px-4 gap-1.5">
-                          <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-                          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
-                          <div className="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                /* PC Monitor Frame (그림자 및 베젤 마감 개선) */
+                <div className="w-full flex flex-col items-center group">
+                  <div className="w-full bg-[#111] rounded-2xl p-1 shadow-[0_30px_90px_rgba(0,0,0,0.12)] border border-gray-800 transition-transform duration-500 group-hover:scale-[1.01]">
+                    <div className="w-full bg-white rounded-xl aspect-[16/10] overflow-hidden relative border border-black/10">
+                       <div className="absolute top-0 left-0 w-full h-7 bg-gray-100/80 backdrop-blur-sm border-b border-gray-200 z-50 flex items-center px-4 gap-1.5">
+                          <div className="w-2 h-2 rounded-full bg-[#ff5f57]"></div>
+                          <div className="w-2 h-2 rounded-full bg-[#febc2e]"></div>
+                          <div className="w-2 h-2 rounded-full bg-[#28c840]"></div>
                        </div>
                        
-                       <div className="pt-8 h-full w-full">
+                       <div className="pt-7 h-full w-full relative">
                           {items.map((item, itemIdx) => (
                             <div 
                               key={itemIdx}
@@ -291,11 +292,11 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                               onMouseLeave={() => setIsDragging(false)}
                               onMouseUp={() => setIsDragging(false)}
                               onMouseMove={(e) => onMouseMove(e, itemIdx)}
-                              className={`absolute inset-0 w-full h-full pt-8 overflow-y-auto no-scrollbar transition-opacity duration-1000 ${itemIdx === activeItemIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+                              className={`absolute inset-0 w-full h-full pt-7 overflow-y-auto no-scrollbar transition-opacity duration-1000 ${itemIdx === activeItemIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
                             >
                                {item.images.map((img, imgIdx) => (
-                                <div key={imgIdx} className={`absolute inset-0 w-full h-full pt-8 transform transition-all duration-700 ${imgIdx === subImageIndices[itemIdx] ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}>
-                                  <img src={img} alt={`PC Screen ${itemIdx}-${imgIdx}`} className="w-full h-auto block" draggable={false} />
+                                <div key={imgIdx} className={`absolute inset-0 w-full h-full pt-7 transform transition-all duration-700 ${imgIdx === subImageIndices[itemIdx] ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}>
+                                  <img src={img} alt={`PC Screen ${itemIdx}-${imgIdx}`} className="w-full h-full object-cover object-top" draggable={false} />
                                 </div>
                               ))}
                             </div>
@@ -303,18 +304,18 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                        </div>
                     </div>
                   </div>
-                  <div className="w-24 h-6 bg-[#333] -mt-1 relative z-0"></div>
-                  <div className="w-48 h-2.5 bg-[#444] rounded-full shadow-lg"></div>
+                  <div className="w-24 h-6 bg-[#222] -mt-1 relative z-0 shadow-inner"></div>
+                  <div className="w-44 h-2 bg-[#333] rounded-full shadow-lg"></div>
                 </div>
               )}
 
-              <div className="flex items-center gap-6 mt-8 bg-white/80 px-5 py-2.5 rounded-full border border-gray-100 shadow-sm backdrop-blur-md z-20">
+              <div className="flex items-center gap-6 mt-10 bg-white/60 px-5 py-2.5 rounded-full border border-gray-100 shadow-sm backdrop-blur-lg z-50">
                 <button onClick={(e) => handlePrevSubImage(e, activeItemIndex)} disabled={subImageIndices[activeItemIndex] === 0} className="p-1.5 rounded-full text-gray-400 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-10 transition-all">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
                 </button>
-                <div className="text-xs font-bold text-gray-900 tabular-nums">
+                <div className="text-[11px] font-bold text-gray-900 tabular-nums tracking-widest">
                   <span className="text-[#004a99]">{subImageIndices[activeItemIndex] + 1}</span>
-                  <span className="mx-2 text-gray-200">/</span>
+                  <span className="mx-2 text-gray-300">/</span>
                   <span className="text-gray-400">{items[activeItemIndex]?.images.length}</span>
                 </div>
                 <button onClick={(e) => handleNextSubImage(e, activeItemIndex)} disabled={subImageIndices[activeItemIndex] === (items[activeItemIndex]?.images.length - 1)} className="p-1.5 rounded-full text-gray-400 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-10 transition-all">
