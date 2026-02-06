@@ -120,7 +120,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
               <div className="text-[#004a99] font-black text-sm tracking-widest uppercase mb-4">
                 {item.category || `Section ${(idx + 1).toString().padStart(2, '0')}`}
               </div>
-              <h2 className={`${viewMode === 'PC' ? 'text-4xl' : 'text-5xl'} font-bold text-gray-900 leading-tight mb-8 whitespace-pre-line`}>           
+              <h2 className={`${viewMode === 'PC' ? 'text-3xl' : 'text-4xl'} font-bold text-gray-900 leading-tight mb-8 whitespace-pre-line`}>           
                 {item.title}
               </h2>
               <div className="w-16 h-[3px] bg-[#004a99] mb-8"></div>
