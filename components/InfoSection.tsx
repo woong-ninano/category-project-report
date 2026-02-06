@@ -25,13 +25,22 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
     const handleScroll = () => {
       if (!containerRef.current || window.innerWidth < 768) return;
       
-      const { top, height } = containerRef.current.getBoundingClientRect();
+      const rect = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       
-      if (top <= 0 && Math.abs(top) < height - windowHeight) {
-        const totalScrollableHeight = height - windowHeight;
-        const progress = Math.abs(top) / totalScrollableHeight;
+      // 1. 컨테이너가 화면 상단보다 아래에 있을 때 (스크롤 전)
+      if (rect.top > -10) {
+        if (activeItemIndex !== 0) setActiveItemIndex(0);
+        return;
+      }
+
+      const totalScrollableHeight = rect.height - windowHeight;
+
+      // 2. 컨테이너 내부를 스크롤 중일 때
+      if (Math.abs(rect.top) < totalScrollableHeight) {
+        const progress = Math.abs(rect.top) / totalScrollableHeight;
         
+        // 민감도를 고려한 인덱스 계산
         const index = Math.min(
           Math.floor(progress * items.length),
           items.length - 1
@@ -40,14 +49,18 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
         if (index !== activeItemIndex) {
           setActiveItemIndex(index);
         }
-      } else if (top > 0) {
-        setActiveItemIndex(0);
-      } else {
-        setActiveItemIndex(items.length - 1);
+      } 
+      // 3. 컨테이너 끝까지 스크롤했을 때
+      else {
+        if (activeItemIndex !== items.length - 1) {
+          setActiveItemIndex(items.length - 1);
+        }
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    // 초기 로드 시 한 번 실행하여 위치 고정
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, [items.length, activeItemIndex]);
 
@@ -91,7 +104,6 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
     const container = scrollContainerRefs.current[idx];
     if (!container) return;
     const y = e.pageY - container.offsetTop;
-    // 드래그 민감도를 1.5에서 2.5로 상향
     const walk = (y - startY) * 2.5;
     container.scrollTop = scrollTop - walk;
   };
@@ -207,8 +219,8 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
       <div 
         ref={containerRef}
         className="hidden md:block print:hidden relative w-full"
-        /* 높이 배율을 100vh에서 50vh로 줄여 섹션 전환 민감도를 높임 */
-        style={{ height: `${items.length * 50}vh` }}
+        /* 최소 높이를 보장하여 아이템이 적어도 스크롤이 가능하도록 설정 */
+        style={{ height: `${Math.max(items.length * 50, 120)}vh` }}
       >
         <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-16 lg:gap-24 overflow-hidden max-w-7xl mx-auto px-12 md:px-16 lg:px-20">
           
