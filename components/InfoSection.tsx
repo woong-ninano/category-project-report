@@ -91,7 +91,8 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
     const container = scrollContainerRefs.current[idx];
     if (!container) return;
     const y = e.pageY - container.offsetTop;
-    const walk = (y - startY) * 1.5;
+    // 드래그 민감도를 1.5에서 2.5로 상향
+    const walk = (y - startY) * 2.5;
     container.scrollTop = scrollTop - walk;
   };
 
@@ -206,7 +207,8 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
       <div 
         ref={containerRef}
         className="hidden md:block print:hidden relative w-full"
-        style={{ height: `${items.length * 100}vh` }}
+        /* 높이 배율을 100vh에서 50vh로 줄여 섹션 전환 민감도를 높임 */
+        style={{ height: `${items.length * 50}vh` }}
       >
         <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-16 lg:gap-24 overflow-hidden max-w-7xl mx-auto px-12 md:px-16 lg:px-20">
           
