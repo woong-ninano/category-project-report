@@ -204,7 +204,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                   <button onClick={(e) => handlePrevSubImage(e, idx)} disabled={subImageIndices[idx] === 0} className="p-1 disabled:opacity-10">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
                   </button>
-                  <span className="text-[10px] font-bold text-gray-900">{subImageIndices[idx] + 1} / {item.images.length}</span>
+                  <span className="text-[10px] font-bold text-gray-900">{(subImageIndices[idx] || 0) + 1} / {item.images.length}</span>
                   <button onClick={(e) => handleNextSubImage(e, idx)} disabled={subImageIndices[idx] === item.images.length - 1} className="p-1 disabled:opacity-10">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
                   </button>
@@ -220,7 +220,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
         ref={containerRef}
         className="hidden md:block print:hidden relative w-full"
         /* 최소 높이를 보장하여 아이템이 적어도 스크롤이 가능하도록 설정 */
-        style={{ height: `${Math.max(items.length * 50, 120)}vh` }}
+        style={{ height: `${Math.max(items.length * 110, 120)}vh` }}
       >
         <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-16 lg:gap-24 overflow-hidden max-w-7xl mx-auto px-12 md:px-16 lg:px-20">
           
@@ -337,9 +337,9 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
                 </button>
                 <div className="text-[11px] font-bold text-gray-900 tabular-nums tracking-widest">
-                  <span className="text-[#004a99]">{subImageIndices[activeItemIndex] + 1}</span>
+                  <span className="text-[#004a99]">{(subImageIndices[activeItemIndex] || 0) + 1}</span>
                   <span className="mx-2 text-gray-300">/</span>
-                  <span className="text-gray-400">{items[activeItemIndex]?.images.length}</span>
+                  <span className="text-gray-400">{items[activeItemIndex]?.images.length || 0}</span>
                 </div>
                 <button onClick={(e) => handleNextSubImage(e, activeItemIndex)} disabled={subImageIndices[activeItemIndex] === (items[activeItemIndex]?.images.length - 1)} className="p-1.5 rounded-full text-gray-400 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-10 transition-all">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>

@@ -22,6 +22,67 @@ const INITIAL_CONFIG: SiteConfig = {
 
 const MASTER_RESET_KEY = 'reset';
 
+const ScrollNav = () => {
+  // [설정] 스크롤 속도와 이동 거리를 여기서 조절하세요
+  const SCROLL_DURATION = 800; // 한 화면 이동에 적합한 부드러운 속도 (0.8초)
+  const SCROLL_RATIO = 1.0;    // 정확히 한 화면(100vh)씩 이동
+
+  const handleScroll = (direction: 'up' | 'down') => {
+    const startPosition = window.scrollY;
+    const distance = window.innerHeight * SCROLL_RATIO * (direction === 'up' ? -1 : 1);
+    const targetPosition = startPosition + distance;
+    let startTime: number | null = null;
+
+    // 부드러운 가속/감속 함수 (Ease In Out Quad)
+    const ease = (t: number, b: number, c: number, d: number) => {
+      t /= d / 2;
+      if (t < 1) return c / 2 * t * t + b;
+      t--;
+      return -c / 2 * (t * (t - 2) - 1) + b;
+    };
+
+    const animation = (currentTime: number) => {
+      if (startTime === null) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const run = ease(timeElapsed, startPosition, distance, SCROLL_DURATION);
+      
+      window.scrollTo(0, run);
+
+      if (timeElapsed < SCROLL_DURATION) {
+        requestAnimationFrame(animation);
+      } else {
+        // 애니메이션 종료 후 정확한 위치로 보정
+        window.scrollTo(0, targetPosition);
+      }
+    };
+
+    requestAnimationFrame(animation);
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 flex flex-col bg-white/90 backdrop-blur-md border border-gray-200 rounded-full shadow-lg overflow-hidden">
+      <button
+        onClick={() => handleScroll('up')}
+        className="p-3 hover:bg-gray-50 transition-colors active:bg-gray-100 group border-b border-gray-100"
+        aria-label="Scroll Up"
+      >
+        <svg className="w-6 h-6 text-gray-400 group-hover:text-[#004a99] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+        </svg>
+      </button>
+      <button
+        onClick={() => handleScroll('down')}
+        className="p-3 hover:bg-gray-50 transition-colors active:bg-gray-100 group"
+        aria-label="Scroll Down"
+      >
+        <svg className="w-6 h-6 text-gray-400 group-hover:text-[#004a99] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    </div>
+  );
+};
+
 const App: React.FC = () => {
   const [config, setConfig] = useState<SiteConfig>(INITIAL_CONFIG);
   const [loading, setLoading] = useState(true);
@@ -223,6 +284,8 @@ const App: React.FC = () => {
           </div>
         </div>
       </footer>
+      
+      <ScrollNav />
     </div>
   );
 };
