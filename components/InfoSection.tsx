@@ -220,7 +220,7 @@ const InfoSection: React.FC<SectionData> = ({ items, viewMode }) => {
         ref={containerRef}
         className="hidden md:block print:hidden relative w-full"
         /* 최소 높이를 보장하여 아이템이 적어도 스크롤이 가능하도록 설정 */
-        style={{ height: `${Math.max(items.length * 110, 120)}vh` }}
+        style={{ height: `${Math.max(items.length * 120, 120)}vh` }}
       >
         <div className="sticky top-0 h-screen w-full flex flex-row items-center justify-center gap-16 lg:gap-24 overflow-hidden max-w-7xl mx-auto px-12 md:px-16 lg:px-20">
           
